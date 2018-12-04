@@ -18,21 +18,3 @@ for ($i = 0; $i < 10; $i++) {
 }
 
 $delay->loop();
-
-
-/**
- * zrange
- */
-//$client->zadd('books', 10.0, 'java');
-//$client->zadd('books', 15, 'go');
-//$client->zadd('books', 12, 'php');
-//
-//
-//$nn = $client->zrem('books', 'php');
-//var_dump($nn);
-//$mm = $client->zrangebyscore('books', 0, 15, [
-//    'limit' => array(1, 2), // [0]: offset  [1]: count
-//]);
-////$mm = $client->zrevrangebyscore('books',20,0,['withscores'=>true]);
-//
-//var_dump($mm);

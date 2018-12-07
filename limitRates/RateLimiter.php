@@ -13,6 +13,8 @@ class RateLimiter
 {
     protected $client;
 
+    protected $precision = 100000;
+
     public function __construct()
     {
         $this->client = new Client();
@@ -22,18 +24,19 @@ class RateLimiter
     {
         $key = "hits:$userid:$actionKey";
         list ($msec, $sec) = explode(' ', microtime());
-        $now = (int)(($sec + $msec) * 100000);
+        $now = (int)(($sec + $msec) * $this->precision);
 
+        // 次数和剩余时长
         $count = $this->client->zcard($key);
         if ($count >= $maxCount) {
-//            $this->client->z
-//            $timeleft = ;
+            $arrs = $this->client->zrange($key, 0, -1);
+            $timeLeft =   $period - floor(($now -$arrs[0])/ $this->precision) ;
             return false;
         }
 
         $response = $this->client->pipeline(function ($pipe) use ($key, $now, $period, $maxCount) {
             $pipe->zadd($key, $now, (string)$now);
-            $pipe->zremrangebyscore($key, 0, $now - $period * 100000);
+            $pipe->zremrangebyscore($key, 0, $now - $period *  $this->precision);
             $pipe->zcard($key);
             $pipe->expire($key, $period + 1);
         });

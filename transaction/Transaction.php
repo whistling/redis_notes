@@ -31,37 +31,33 @@ class Transaction
     {
         $key = $this->key_for($user_id);
 
-
         //*** 一、管道
 //        $this->client->watch($key);
-        $value = $this->client->get($key);
-        $response = $this->client->pipeline(function ($pipe) use ($key,$value){
-//            $pipe->watch($key);
-            $pipe->set($key, 201);
-            $pipe->multi();
-            $pipe->set($key, $value * 2);
-        });
-        var_dump($response);
-        $this->client->exec();
+//        $value = $this->client->get($key);
+//        $response = $this->client->pipeline(function ($pipe) use ($key,$value){
+////            $pipe->watch($key);
+//            $pipe->set($key, 201);
+//            $pipe->multi();
+//            $pipe->set($key, $value * 2);
+//        });
+//        var_dump($response);
+//        $this->client->exec();
 
         //*** 二、无管道
-//        $this->client->transaction();
-//        $this->client->watch($key);
-//
-//        $value = $this->client->get($key);
-//        $this->client->set($key, 201);
-//
-//        $this->client->multi();
-//        $this->client->set($key, $value * 2);
-//        $this->client->exec();
-//
+        $this->client->transaction();
+        $this->client->watch($key);
+        $value = $this->client->get($key);
+        $this->client->set($key, 201);
+        $this->client->multi();
+        $this->client->set($key, $value * 2);
+
+        //*** response 为null watch 成功啥也没执行
+        $response = $this->client->exec();
         return $this->client->get($key);
     }
 
 
-
-//
-//
+    // 包装好的 transaction  cas
 //    public function doubleCount($user_id)
 //    {
 //        $key = $this->key_for($user_id);

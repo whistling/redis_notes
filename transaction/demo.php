@@ -9,12 +9,9 @@ require "../../../vendor/autoload.php";
 
 $client = new \Predis\Client();
 
-
 $ts = new \Module\redisNotes\transaction\Transaction();
 
- echo $ts->doubleCount('10').PHP_EOL;
-
-
+echo $ts->doubleCount('10').PHP_EOL;
 
 
 

@@ -14,16 +14,23 @@ $client = new Client();
 $users = [15155865921,15155865451,18855865921,18855868821,18855869871,15155865934];
 
 // 1.分词存取
-foreach ($users as $user) {
-    $len = mb_strlen($user, 'utf-8');
-    for ($i = 0; $i <= $len; $i++) {
-        $key = mb_substr($user, 0, $i + 1, 'utf-8');
-        if ($i == $len) {
-            $key .= '*';
+
+$client->pipeline(function ($pipe) use ($users) {
+    foreach ($users as $user) {
+        $len = mb_strlen($user, 'utf-8');
+        for ($i = 0; $i <= $len; $i++) {
+            $key = mb_substr($user, 0, $i + 1, 'utf-8');
+            if ($i == $len) {
+                $key .= '*';
+            }
+            $pipe->zadd('autocomplet_user_mobile', 0, $key);
         }
-        $client->zadd('autocomplet_user_mobile', 0, $key);
     }
-}
+});
+
+
+
+
 
 // 2.检索
 $key = '151558659';
